@@ -1,1 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>XAUUSD AI Scalper | EXNESS + Groq Analysis (Side-by-Side)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #0a0f1a;
+            color: #eef2ff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #111827, #0f172a);
+            border-radius: 28px;
+            padding: 18px 28px;
+            margin-bottom: 24px;
+            border: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .title h1 {
+            font-size: 1.7rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .title p {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        .status-badge {
+            background: #1e293b;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .status-badge.real {
+            background: #10b981;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #111827;
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid #1e293b;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #9ca3af;
+        }
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+        .chart-card {
+            background: #0f172a;
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 24px;
+            border: 1px solid #1e293b;
+        }
+        #tradingview-widget {
+            width: 100%;
+            height: 460px;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        /* EXNESS Launch Panel - Enhanced */
+        .exness-launch-panel {
+            background: linear-gradient(135deg, #1a2332, #0f172a);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 2px solid #f59e0b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .exness-info {
+            flex: 1;
+        }
+        .exness-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #fbbf24;
+        }
+        .exness-info p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .exness-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn-exness {
+            background: #f59e0b;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            text-decoration: none;
+            color: #0a0f1a;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .btn-exness:hover {
+            transform: translateY(-2px);
+            background: #d97706;
+        }
+        .btn-exness.secondary {
+            background: #334155;
+            color: #fbbf24;
+        }
+        .btn-exness.warning {
+            background: #ef4444;
+            color: white;
+        }
+        
+        /* Side-by-Side Instructions Card */
+        .layout-guide {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 24px;
+            border-left: 4px solid #3b82f6;
+        }
+        .layout-guide h4 {
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+        .layout-guide ol {
+            margin-left: 20px;
+            color: #cbd5e1;
+        }
+        .layout-guide li {
+            margin: 8px 0;
+        }
+        
+        .controls-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .panel {
+            background: #111827;
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #1e293b;
+        }
+        .panel h3 {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 40px;
+            color: white;
+            font-family: monospace;
+            margin-bottom: 12px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #f59e0b;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            transform: scale(0.98);
+            background: #d97706;
+        }
+        button.success {
+            background: #10b981;
+            color: white;
+        }
+        button.danger {
+            background: #ef4444;
+            color: white;
+        }
+        button.secondary {
+            background: #334155;
+            color: #f59e0b;
+        }
+        button.info {
+            background: #3b82f6;
+            color: white;
+        }
+        .flex-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .flex-buttons button {
+            margin-bottom: 0;
+        }
+        .signal-box {
+            background: #0f172a;
+            border-radius: 20px;
+            padding: 16px;
+            margin-top: 16px;
+            border-left: 4px solid #f59e0b;
+        }
+        .signal {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .signal.BUY { color: #10b981; }
+        .signal.SELL { color: #ef4444; }
+        .signal.HOLD { color: #fbbf24; }
+        .log-area {
+            background: #0f172a;
+            border-radius: 20px;
+            padding: 16px;
+            height: 220px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+        .log-entry {
+            padding: 6px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+        .api-key-input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .api-key-input-group input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        .api-key-input-group button {
+            width: auto;
+            padding: 12px 20px;
+            margin-bottom: 0;
+            background: #3b82f6;
+        }
+        .quick-trade-card {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 12px;
+            border: 1px solid #334155;
+        }
+        .trade-levels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 12px 0;
+        }
+        .level-item {
+            background: #00000030;
+            padding: 8px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .level-label {
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+        .level-value {
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+        .floating-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e293b;
+            padding: 10px 15px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: #fbbf24;
+            z-index: 100;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .floating-hint:hover {
+            background: #f59e0b;
+            color: #0a0f1a;
+        }
+        @media (max-width: 800px) {
+            .controls-row {
+                grid-template-columns: 1fr;
+            }
+            .exness-buttons {
+                width: 100%;
+            }
+            .btn-exness {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="title">
+            <h1>⚡ XAUUSD AI Scalper + EXNESS Integration</h1>
+            <p>REAL Market Data → Groq AI Analysis | Trade on EXNESS (Side-by-Side Window)</p>
+        </div>
+        <div class="status-badge real">🔴 LIVE REAL DATA</div>
+    </div>
 
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">XAUUSD (Real Bid)</div><div class="stat-value" id="currentPrice">---</div></div>
+        <div class="stat-card"><div class="stat-label">Support (24h)</div><div class="stat-value" id="supportVal">---</div></div>
+        <div class="stat-card"><div class="stat-label">Resistance (24h)</div><div class="stat-value" id="resistanceVal">---</div></div>
+        <div class="stat-card"><div class="stat-label">RSI (14)</div><div class="stat-value" id="rsiVal">---</div></div>
+        <div class="stat-card"><div class="stat-label">Data Source</div><div class="stat-value" id="dataSource" style="font-size:0.9rem;">Twelve Data API</div></div>
+    </div>
+
+    <!-- Side-by-Side Instructions -->
+    <div class="layout-guide">
+        <h4><i class="fas fa-desktop"></i> How to use EXNESS side-by-side with this dashboard:</h4>
+        <ol>
+            <li>Click <strong>"Open EXNESS in New Window"</strong> below - EXNESS will open in a separate browser window</li>
+            <li><strong>Resize both windows</strong> to half your screen (Windows: Win+Left/Right Arrow, Mac: Window Tiling)</li>
+            <li>Place this dashboard on one half, EXNESS on the other half</li>
+            <li>Run AI analysis → Copy trade details → Paste into EXNESS order window</li>
+        </ol>
+    </div>
+
+    <!-- EXNESS Launch Panel -->
+    <div class="exness-launch-panel">
+        <div class="exness-info">
+            <h3><i class="fas fa-chart-line"></i> EXNESS Trading Terminal</h3>
+            <p><i class="fas fa-info-circle"></i> Due to EXNESS security policy, iframe embedding is blocked. Opens as separate window for side-by-side trading.</p>
+        </div>
+        <div class="exness-buttons">
+            <button id="openExnessPopupBtn" class="btn-exness">
+                <i class="fas fa-external-link-alt"></i> Open EXNESS (XAUUSD)
+            </button>
+            <button id="openExnessMainBtn" class="btn-exness secondary">
+                <i class="fas fa-globe"></i> EXNESS Main
+            </button>
+            <button id="resizeGuideBtn" class="btn-exness warning">
+                <i class="fas fa-window-restore"></i> Split Screen Guide
+            </button>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div style="margin-bottom: 8px; display: flex; justify-content: space-between;">
+            <span><i class="fas fa-chart-simple"></i> XAUUSD Live Chart (TradingView)</span>
+            <span class="warning">✅ AI uses REAL market data from Twelve Data API</span>
+        </div>
+        <div id="tradingview-widget"></div>
+    </div>
+
+    <div class="controls-row">
+        <div class="panel">
+            <h3><i class="fas fa-microchip"></i> Groq AI Analysis</h3>
+            <div class="api-key-input-group">
+                <input type="password" id="groqApiKey" placeholder="Groq API Key (gsk_...)" value="">
+                <button id="saveGroqKey" style="background:#3b82f6;">Save</button>
+            </div>
+            <div class="api-key-input-group" style="margin-top: 12px;">
+                <input type="password" id="twelveDataKey" placeholder="Twelve Data API Key (demo works)" value="demo">
+                <button id="saveTwelveKey" style="background:#3b82f6;">Save</button>
+            </div>
+            <button id="fetchAndAnalyzeBtn" class="success"><i class="fas fa-brain"></i> Fetch REAL Data & Run AI</button>
+            <button id="autoAnalyzeBtn" class="secondary"><i class="fas fa-clock"></i> Auto-Analyze (every 5min)</button>
+            <div id="aiOutput" class="signal-box">
+                <div style="color:#9ca3af;">⬅️ Enter API keys above, then click "Fetch REAL Data & Run AI"</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3><i class="fas fa-bullhorn"></i> Trade Execution Center</h3>
+            <div class="flex-buttons">
+                <button id="buyBtn" style="background:#10b981;"><i class="fas fa-arrow-up"></i> BUY XAUUSD</button>
+                <button id="sellBtn" style="background:#ef4444;"><i class="fas fa-arrow-down"></i> SELL XAUUSD</button>
+            </div>
+            
+            <div class="quick-trade-card">
+                <div class="stat-label" style="text-align: center;">📊 LATEST AI SIGNAL</div>
+                <div id="lastSignalDisplay" style="font-weight: 700; font-size:1rem; text-align: center; margin: 8px 0;">—</div>
+                <div id="currentTradeLevels" style="display: none;">
+                    <div class="trade-levels">
+                        <div class="level-item">
+                            <div class="level-label">🎯 ENTRY</div>
+                            <div class="level-value" id="displayEntry">---</div>
+                        </div>
+                        <div class="level-item">
+                            <div class="level-label">📈 TAKE PROFIT</div>
+                            <div class="level-value" id="displayTP">---</div>
+                        </div>
+                        <div class="level-item">
+                            <div class="level-label">🛑 STOP LOSS</div>
+                            <div class="level-value" id="displaySL">---</div>
+                        </div>
+                        <div class="level-item">
+                            <div class="level-label">💪 CONFIDENCE</div>
+                            <div class="level-value" id="displayConfidence">---</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-buttons" style="margin-top: 8px;">
+                    <button id="copyTradeDetails" class="secondary" style="margin-bottom: 0; font-size: 0.8rem;">
+                        <i class="fas fa-copy"></i> Copy Details
+                    </button>
+                    <button id="openExnessQuickBtn" class="info" style="margin-bottom: 0; background: #3b82f6; font-size: 0.8rem;">
+                        <i class="fas fa-external-link-alt"></i> Open EXNESS
+                    </button>
+                </div>
+            </div>
+            
+            <input type="text" id="webhookUrl" placeholder="Webhook URL (optional auto-execution)">
+            <button id="manualRefreshPrice" class="secondary"><i class="fas fa-sync-alt"></i> Manual Price Fetch</button>
+        </div>
+    </div>
+
+    <div class="log-area" id="logPanel">
+        <div class="log-entry">[System] XAUUSD AI Scalper initialized</div>
+        <div class="log-entry">[System] ⚠️ EXNESS blocks iframe embedding for security - opens as separate window</div>
+        <div class="log-entry">[System] 💡 Click "Open EXNESS" then use split-screen mode (Windows key + arrow)</div>
+        <div class="log-entry">[System] Enter your Groq API key to start AI analysis</div>
+    </div>
+</div>
+
+<div class="floating-hint" id="floatingHint">
+    <i class="fas fa-chart-line"></i> EXNESS opens in new window → Use split screen!
+</div>
