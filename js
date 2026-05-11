@@ -1,4 +1,4 @@
-<script>
+
     // ==============================================================
     // XAUUSD AI SCALPER - EXNESS opens as separate window (no iframe issues)
     // ==============================================================
@@ -296,6 +296,4 @@
         addLog("💡 Click 'Open EXNESS' → use Windows Split Screen (Win+Arrow) for side-by-side trading", 'success');
         addLog("🔒 EXNESS cannot be embedded due to security policy - separate window is the only option", 'info');
     }
-    
-    init();
-</script>
+
